@@ -1,0 +1,53 @@
+---
+title: "Chandler - test"
+output: html_notebook
+---
+ 
+# Creating my XPath query to access my xml doc
+```{r}
+library(XML)
+
+
+library(RSQLite)
+library(DBI)
+library(knitr)
+```
+
+```{r parsexml}
+path = "/Users/chandlersmith/MSCS/CS5200/Practicum_2"
+fn <- "pubmed_sample.xml"
+fpn = paste0(path, fn)
+dbfn <- "storeXML.db"
+dbfpn = paste0(path, dbfn)
+
+```
+
+```{r}
+# Reading the XML file and parse into DOM
+xmlDOM <- xmlParse(file = fpn)
+
+# get the root node of the DOM tree
+r <- xmlRoot(xmlDOM)
+```
+
+```{r executeXPath1}
+
+xpathEx <- "//PubmedArticle//Article//JournalIssue[@CitedMedium = 'Internet']/../../ArticleTitle"
+visits <- xpathSApply(xmlObj, xpathEx, xmlValue)
+visits
+```
+
+
+```{r executeXPath2}
+
+xpathEx <- "count(//PubmedArticle//Article//JournalIssue[PubDate/Year='2012'])"
+visits <- xpathSApply(xmlObj, xpathEx, xmlValue)
+visits
+```
+
+```{r executeXPath3}
+
+xpathEx <- "//PubmedArticle//Article/AuthorList[count(./Author/*) > 10]/../ArticleTitle"
+visits <- xpathSApply(xmlObj, xpathEx, xmlValue)
+visits
+```
